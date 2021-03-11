@@ -10,10 +10,11 @@ if (!$_SESSION["username"]){  //check session
 
 include 'DBconfig.php';
 
-if(isset($_POST['search']))
-{
+if(isset($_POST['search'])){
+  
     if(!empty($_POST['nameprovince'])){ 
-      $nameprovinceshow = $_POST['nameprovince'];
+      $chk_stt_search = 1;
+      
     // ຈະເຮັດວຽກຕອນທີ່ມີການ ເລືອກແຂວງ
     $query = "SELECT province.name_province_la,district.name_district_la,village.name_village_la,landtax_api_lands.*
     FROM landtax_api_lands
@@ -29,7 +30,7 @@ if(isset($_POST['search']))
     
     }
     if(!empty($_POST['namedistrict'])){
-        
+      $chk_stt_search = 2;
       // ຈະເຮັດວຽກຕອນທີ່ມີການ ເລືອກເມືອງ
       $query = "SELECT province.name_province_la,district.name_district_la,village.name_village_la,landtax_api_lands.*
       FROM landtax_api_lands
@@ -43,7 +44,7 @@ if(isset($_POST['search']))
       $result = pg_query($db,$query);
       }
     if(!empty($_POST['namevillage'])){
-        
+      $chk_stt_search = 3;
       // ຈະເຮັດວຽກຕອນທີ່ມີການ ເລືອກບ້ານ
       $query = "SELECT province.name_province_la,district.name_district_la,village.name_village_la,landtax_api_lands.*
       FROM landtax_api_lands
@@ -57,6 +58,7 @@ if(isset($_POST['search']))
       $result = pg_query($db,$query);
       }
       if(empty($_POST['nameprovince'])){
+        $chk_stt_search = 101;
         // ຈະເຮັດວຽກຕອນທີ່ ບໍ່ມີການພິມຂໍ້ມູນໃສ່ ປ່ອງ search
         $query = "SELECT province.name_province_la,district.name_district_la,village.name_village_la,landtax_api_lands.*
         FROM landtax_api_lands
@@ -69,7 +71,8 @@ if(isset($_POST['search']))
         "; 
         $result = pg_query($db,$query); 
         }
-        if(!empty($_POST['datestart'] and $_POST['datestop'])){                 
+        if(!empty($_POST['datestart'] and $_POST['datestop'])){    
+          $chk_stt_search = 4;             
           // ຈະເຮັດວຽກຕອນທີ່ມີການ ຄົ້ນຫາຕາມວັນທີ
           $query = "SELECT province.name_province_la,district.name_district_la,village.name_village_la,landtax_api_lands.*
           FROM landtax_api_lands
@@ -82,7 +85,8 @@ if(isset($_POST['search']))
           Where created_at between '".$_POST['datestart']." 00:00:00'  and '".$_POST['datestop']." 23:59:59' "; 
           $result = pg_query($db,$query);
           }
-          if(!empty($_POST['datestart'] and $_POST['datestop'] and $_POST['nameprovince'])){                 
+          if(!empty($_POST['datestart'] and $_POST['datestop'] and $_POST['nameprovince'])){ 
+            $chk_stt_search = 5;                
             // ຈະເຮັດວຽກຕອນທີ່ມີການ ຄົ້ນຫາຕາມວັນທີ ແລະ ເລືອກແຂວງ
             $query = "SELECT province.name_province_la,district.name_district_la,village.name_village_la,landtax_api_lands.*
             FROM landtax_api_lands
@@ -96,6 +100,7 @@ if(isset($_POST['search']))
             $result = pg_query($db,$query);
             }
             if(!empty($_POST['datestart'] and $_POST['datestop'] and $_POST['nameprovince'] and $_POST['namedistrict'])){                 
+              $chk_stt_search = 6;
               // ຈະເຮັດວຽກຕອນທີ່ມີການ ຄົ້ນຫາຕາມວັນທີ ແລະ ເລືອກແຂວງ + ເມືອງ
               $query = "SELECT province.name_province_la,district.name_district_la,village.name_village_la,landtax_api_lands.*
               FROM landtax_api_lands
@@ -109,6 +114,7 @@ if(isset($_POST['search']))
               $result = pg_query($db,$query);
               }
               if(!empty($_POST['datestart'] and $_POST['datestop'] and $_POST['nameprovince'] and $_POST['namedistrict'] and $_POST['namevillage'])){                 
+                $chk_stt_search = 7;
                 // ຈະເຮັດວຽກຕອນທີ່ມີການ ຄົ້ນຫາຕາມວັນທີ ແລະ ເລືອກແຂວງ + ເມືອງ + ບ້ານ
                 $query = "SELECT province.name_province_la,district.name_district_la,village.name_village_la,landtax_api_lands.*
                 FROM landtax_api_lands
@@ -123,7 +129,7 @@ if(isset($_POST['search']))
                 }
    
 }else{
-    
+  $chk_stt_search = 101;
     // ຈະເຮັດວຽກໃນຕອນ ໂຫຼດໜ້າຟອມ ເທື່ອທຳອິດ
     $query = "SELECT province.name_province_la,district.name_district_la,village.name_village_la,landtax_api_lands.*
     FROM landtax_api_lands
@@ -282,7 +288,7 @@ if(isset($_POST['search']))
                               <center><label for="date-input1"><span class="fe fe-search fe-16"></span></label></center>
                               <button type="submit" name="search" class="btn btn-primary btn-block">ຄົ້ນຫາ</button>
                             </div>
-                            
+
                           </div>
                         </form>
                       </div> <!-- /. card-body -->
@@ -307,13 +313,39 @@ if(isset($_POST['search']))
                         // }
                         ?></p>
                         
-                        <h3><p><?php $data = pg_query($db,$query);                                                       
-                             $newrow55 = pg_fetch_assoc($data);
-                             echo ' ຄົ້ນຫາຕາມແຂວງ : '.$newrow55['name_province_la'].', ';
-                             echo ' ເມືອງ : '.$newrow55['name_district_la'].', ';
-                             echo ' ບ້ານ : '.$newrow55['name_village_la'].'';
+                        <h3><p>
+                          <?php 
+                            if($chk_stt_search = ""){
+                              echo 'gkcgjkgjhkg';
+                            }elseif($chk_stt_search = 1){
+                              $data = pg_query($db,$query);
+                              if(pg_num_rows($data)){
+                                $newrow55 = pg_fetch_assoc($data);
+                                echo ' ຄົ້ນຫາຕາມແຂວງ : '.$newrow55['name_province_la'].', ';
+                                echo ' ເມືອງ : '.$newrow55['name_district_la'].', ';
+                                echo ' ບ້ານ : '.$newrow55['name_village_la'].'';
+                              }else{
+                                echo ' ຄົ້ນຫາຕາມແຂວງ : ,';
+                                echo ' ເມືອງ : ,';
+                                echo ' ບ້ານ : ';
+                              }                             
+                            }elseif($chk_stt_search = 2){
+                              
+                            }elseif($chk_stt_search = 3){
+                              
+                            }elseif($chk_stt_search = 4){
+
+                            }elseif($chk_stt_search = 5){
+
+                            }elseif($chk_stt_search = 6){
+
+                            }elseif($chk_stt_search = 7){
+
+                            }
+                            
                              
-                            ?></p></h3>                                                    
+                          ?>
+                          </p></h3>                                                    
                       </div>
                     </div>
                   </div> <!-- simple table -->
