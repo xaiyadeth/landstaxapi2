@@ -225,7 +225,7 @@ if(isset($_POST['search']))
                       <div class="card-body">
                         <form>
                           <div class="form-row">
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-2">
                               <center><label for="inputState">ເລືອກແຂວງ</label></center>
                                 <?php                              
                                   // Fetch all the country data 
@@ -247,7 +247,7 @@ if(isset($_POST['search']))
                               </select>
 
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-2">
                               <center><label for="inputState">ເລືອກເມືອງ</label></center>                           
                               
                               <select name="namedistrict" id="distrist" class="form-control">
@@ -256,7 +256,7 @@ if(isset($_POST['search']))
 
 
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-2">
                               <center><label for="inputState">ເລືອກບ້ານ</label></center>
                               <select name="namevillage" id="village" class="form-control">
                                 <option value="">-</option>
@@ -264,26 +264,26 @@ if(isset($_POST['search']))
                             </div>
                           
 
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-2">
                               <center><label for="date-input1">ເລືອກວັນທີ ເລີ່ມຕົ້ນ</label></center>
                               <div class="input-group">
                               <input name="datestart" class="form-control" id="example-date" type="date" name="date" placeholder="dd-mm-yyyy">
                                 
                               </div>
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-2">
                               <center><label for="date-input1">ເລືອກວັນທີ ສິ້ນສຸດ</label></center>
                               <div class="input-group">
                               <input name="datestop" class="form-control" id="example-date" type="date" name="date">
                                 
                               </div>
                             </div>
-
-
+                            <div class="form-group col-md-2">
+                              <center><label for="date-input1"><span class="fe fe-search fe-16"></span></label></center>
+                              <button type="submit" name="search" class="btn btn-primary btn-block">ຄົ້ນຫາ</button>
+                            </div>
+                            
                           </div>
-                          <!-- <input type="text" name="valueToSearch" placeholder="Value To Search"><br><br> -->
-                          <button type="submit" name="search" class="btn btn-primary fe fe-search fe-16">  ຄົ້ນຫາ</button>                                
-                          <!-- <button type="button" class="btn btn-primary fe fe-search fe-16">  ຄົ້ນຫາ</button> -->
                         </form>
                       </div> <!-- /. card-body -->
                     </div> <!-- /. card -->
@@ -319,17 +319,50 @@ if(isset($_POST['search']))
                   </div> <!-- simple table -->
                 </div> <!-- end section -->
                 <br>
-
-                <div class="col-md-4 mb-4">
-                  <div class="card shadow">
-                    <div class="card-body">
-                      <div class="row align-items-center">
-                        <div class="col">
-                          <span class="h4 mb-0">ລວມເງິນຄ່າຊໍາລະທັງໝົດ</span>
-                          <p class="text-muted mb-0">1,500,000</p>
+                <div class="row">
+                  <div class="col-md-4 mb-4">
+                    <div class="card shadow">
+                      <div class="card-body">
+                        <div class="row align-items-center">
+                          <div class="col">
+                            <span class="h4 mb-0">ລວມເງິນຄ່າຊໍາລະ</span>
+                            <p class="text-muted mb-0">1,500,000</p>
+                          </div>
+                          <div class="col-auto">
+                            <span class="fe fe-32 fe-clipboard text-muted mb-0"></span>
+                          </div>
                         </div>
-                        <div class="col-auto">
-                          <span class="fe fe-32 fe-clipboard text-muted mb-0"></span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-4 mb-4">
+                    <div class="card shadow">
+                      <div class="card-body">
+                        <div class="row align-items-center">
+                          <div class="col">
+                            <span class="h4 mb-0">ລວມເງິນຄ່າປັບໄໝ</span>
+                            <p class="text-muted mb-0">1,500,000</p>
+                          </div>
+                          <div class="col-auto">
+                            <span class="fe fe-32 fe-clipboard text-muted mb-0"></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-4 mb-4">
+                    <div class="card shadow">
+                      <div class="card-body">
+                        <div class="row align-items-center">
+                          <div class="col">
+                            <span class="h4 mb-0">ລວມຈໍານວນລາຍການ</span>
+                            <p class="text-muted mb-0">1,500,000</p>
+                          </div>
+                          <div class="col-auto">
+                            <span class="fe fe-32 fe-clipboard text-muted mb-0"></span>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -339,7 +372,7 @@ if(isset($_POST['search']))
                 
 
 
-                <div class="row my-4">
+                <div class="row">
                   <!-- Small table -->
                   <div class="col-md-12">
                     <div class="card shadow">
