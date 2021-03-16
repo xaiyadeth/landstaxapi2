@@ -11,134 +11,149 @@ if (!$_SESSION["username"]){  //check session
 include 'DBconfig.php';
 
 if(isset($_POST['search'])){
-  
-    if(!empty($_POST['nameprovince'])){ 
+
+    if(empty($_POST['nameprovince'] and $_POST['namedistrict'] and $_POST['namevillage'] and $_POST['datestart'] and $_POST['datestop'])){
+      $chk_stt_search = "";
+      // ຈະເຮັດວຽກຕອນທີ່ ບໍ່ມີການພິມຂໍ້ມູນໃສ່ ປ່ອງ search
+      $query = "SELECT (select sum (tax_paid) from landtax_api_lands) as total_paid,P.name_province_la,D.name_district_la,V.name_village_la,l.*
+      FROM landtax_api_lands AS L 
+      INNER JOIN province AS P
+      ON L.address_province = P.id_province
+      INNER JOIN district AS D
+      ON L.address_district=D.id_district and L.address_province = D.id_province
+      INNER JOIN village AS V
+      ON L.address_village=V.id_village and L.address_district=V.id_district and L.address_province = V.id_province
+      "; 
+      $result = pg_query($db,$query); 
+      }
+        
+    if(!empty($_POST['nameprovince']) and empty($_POST['datestart'] and $_POST['datestop'] and $_POST['namedistrict'] and $_POST['namevillage'])){
+    // if(!empty($_POST['nameprovince'])){ 
       $chk_stt_search = 1;
-      
-    // ຈະເຮັດວຽກຕອນທີ່ມີການ ເລືອກແຂວງ
-    $query = "SELECT province.name_province_la,district.name_district_la,village.name_village_la,landtax_api_lands.*
-    FROM landtax_api_lands
-    INNER JOIN province
-    ON landtax_api_lands.address_province=province.id_province
-    INNER JOIN district
-    ON landtax_api_lands.address_district=district.id_district and landtax_api_lands.address_province=district.id_province
-    INNER JOIN village
-    ON landtax_api_lands.address_village=village.id_village and landtax_api_lands.address_district=village.id_district and landtax_api_lands.address_province=village.id_province
-    Where address_province=".$_POST['nameprovince'].""; 
-    $result = pg_query($db,$query);
-    
-    
-    }
-    if(!empty($_POST['namedistrict'])){
+      // ຈະເຮັດວຽກຕອນທີ່ມີການ ເລືອກແຂວງ
+      $query = "SELECT (select sum (tax_paid) from landtax_api_lands Where address_province=".$_POST['nameprovince'].") as total_paid,P.name_province_la,D.name_district_la,V.name_village_la,l.*
+      FROM landtax_api_lands AS L 
+      INNER JOIN province AS P
+      ON L.address_province = P.id_province
+      INNER JOIN district AS D
+      ON L.address_district=D.id_district and L.address_province = D.id_province
+      INNER JOIN village AS V
+      ON L.address_village=V.id_village and L.address_district=V.id_district and L.address_province = V.id_province
+      Where address_province=".$_POST['nameprovince'].""; 
+      $result = pg_query($db,$query);       
+      }
+
+    if(!empty($_POST['nameprovince'] and $_POST['namedistrict']) and empty($_POST['datestart'] and $_POST['datestop']and $_POST['namevillage'])){
+    // if(!empty($_POST['nameprovince'] and $_POST['namedistrict'])){
       $chk_stt_search = 2;
       // ຈະເຮັດວຽກຕອນທີ່ມີການ ເລືອກເມືອງ
-      $query = "SELECT province.name_province_la,district.name_district_la,village.name_village_la,landtax_api_lands.*
-      FROM landtax_api_lands
-      INNER JOIN province
-      ON landtax_api_lands.address_province=province.id_province
-      INNER JOIN district
-      ON landtax_api_lands.address_district=district.id_district and landtax_api_lands.address_province=district.id_province
-      INNER JOIN village
-      ON landtax_api_lands.address_village=village.id_village and landtax_api_lands.address_district=village.id_district and landtax_api_lands.address_province=village.id_province
+      $query = "SELECT (select sum (tax_paid) from landtax_api_lands) as total_paid,P.name_province_la,D.name_district_la,V.name_village_la,l.*
+      FROM landtax_api_lands AS L 
+      INNER JOIN province AS P
+      ON L.address_province = P.id_province
+      INNER JOIN district AS D
+      ON L.address_district=D.id_district and L.address_province = D.id_province
+      INNER JOIN village AS V
+      ON L.address_village=V.id_village and L.address_district=V.id_district and L.address_province = V.id_province
       Where address_province=".$_POST['nameprovince']." and address_district=".$_POST['namedistrict'].""; 
       $result = pg_query($db,$query);
       }
-    if(!empty($_POST['namevillage'])){
+
+    if(!empty($_POST['nameprovince'] and $_POST['namedistrict'] and $_POST['namevillage']) and empty($_POST['datestart'] and $_POST['datestop'])){
+    // if(!empty($_POST['nameprovince'] and $_POST['namedistrict'] and $_POST['namevillage'])){
       $chk_stt_search = 3;
       // ຈະເຮັດວຽກຕອນທີ່ມີການ ເລືອກບ້ານ
-      $query = "SELECT province.name_province_la,district.name_district_la,village.name_village_la,landtax_api_lands.*
-      FROM landtax_api_lands
-      INNER JOIN province
-      ON landtax_api_lands.address_province=province.id_province
-      INNER JOIN district
-      ON landtax_api_lands.address_district=district.id_district and landtax_api_lands.address_province=district.id_province
-      INNER JOIN village
-      ON landtax_api_lands.address_village=village.id_village and landtax_api_lands.address_district=village.id_district and landtax_api_lands.address_province=village.id_province
+      $query = "SELECT (select sum (tax_paid) from landtax_api_lands) as total_paid,P.name_province_la,D.name_district_la,V.name_village_la,l.*
+      FROM landtax_api_lands AS L 
+      INNER JOIN province AS P
+      ON L.address_province = P.id_province
+      INNER JOIN district AS D
+      ON L.address_district=D.id_district and L.address_province = D.id_province
+      INNER JOIN village AS V
+      ON L.address_village=V.id_village and L.address_district=V.id_district and L.address_province = V.id_province
       Where address_province=".$_POST['nameprovince']." and address_district=".$_POST['namedistrict']." and address_village=".$_POST['namevillage'].""; 
       $result = pg_query($db,$query);
       }
-      if(empty($_POST['nameprovince'])){
-        $chk_stt_search = 101;
-        // ຈະເຮັດວຽກຕອນທີ່ ບໍ່ມີການພິມຂໍ້ມູນໃສ່ ປ່ອງ search
-        $query = "SELECT province.name_province_la,district.name_district_la,village.name_village_la,landtax_api_lands.*
-        FROM landtax_api_lands
-        INNER JOIN province
-        ON landtax_api_lands.address_province=province.id_province
-        INNER JOIN district
-        ON landtax_api_lands.address_district=district.id_district and landtax_api_lands.address_province=district.id_province
-        INNER JOIN village
-        ON landtax_api_lands.address_village=village.id_village and landtax_api_lands.address_district=village.id_district and landtax_api_lands.address_province=village.id_province
-        "; 
-        $result = pg_query($db,$query); 
-        }
-        if(!empty($_POST['datestart'] and $_POST['datestop'])){    
-          $chk_stt_search = 4;             
-          // ຈະເຮັດວຽກຕອນທີ່ມີການ ຄົ້ນຫາຕາມວັນທີ
-          $query = "SELECT province.name_province_la,district.name_district_la,village.name_village_la,landtax_api_lands.*
-          FROM landtax_api_lands
-          INNER JOIN province
-          ON landtax_api_lands.address_province=province.id_province
-          INNER JOIN district
-          ON landtax_api_lands.address_district=district.id_district and landtax_api_lands.address_province=district.id_province
-          INNER JOIN village
-          ON landtax_api_lands.address_village=village.id_village and landtax_api_lands.address_district=village.id_district and landtax_api_lands.address_province=village.id_province
-          Where created_at between '".$_POST['datestart']." 00:00:00'  and '".$_POST['datestop']." 23:59:59' "; 
-          $result = pg_query($db,$query);
-          }
-          if(!empty($_POST['datestart'] and $_POST['datestop'] and $_POST['nameprovince'])){ 
-            $chk_stt_search = 5;                
-            // ຈະເຮັດວຽກຕອນທີ່ມີການ ຄົ້ນຫາຕາມວັນທີ ແລະ ເລືອກແຂວງ
-            $query = "SELECT province.name_province_la,district.name_district_la,village.name_village_la,landtax_api_lands.*
-            FROM landtax_api_lands
-            INNER JOIN province
-            ON landtax_api_lands.address_province=province.id_province
-            INNER JOIN district
-            ON landtax_api_lands.address_district=district.id_district and landtax_api_lands.address_province=district.id_province
-            INNER JOIN village
-            ON landtax_api_lands.address_village=village.id_village and landtax_api_lands.address_district=village.id_district and landtax_api_lands.address_province=village.id_province
-            Where created_at between '".$_POST['datestart']." 00:00:00'  and '".$_POST['datestop']." 23:59:59' and address_province=".$_POST['nameprovince'].""; 
-            $result = pg_query($db,$query);
-            }
-            if(!empty($_POST['datestart'] and $_POST['datestop'] and $_POST['nameprovince'] and $_POST['namedistrict'])){                 
-              $chk_stt_search = 6;
-              // ຈະເຮັດວຽກຕອນທີ່ມີການ ຄົ້ນຫາຕາມວັນທີ ແລະ ເລືອກແຂວງ + ເມືອງ
-              $query = "SELECT province.name_province_la,district.name_district_la,village.name_village_la,landtax_api_lands.*
-              FROM landtax_api_lands
-              INNER JOIN province
-              ON landtax_api_lands.address_province=province.id_province
-              INNER JOIN district
-              ON landtax_api_lands.address_district=district.id_district and landtax_api_lands.address_province=district.id_province
-              INNER JOIN village
-              ON landtax_api_lands.address_village=village.id_village and landtax_api_lands.address_district=village.id_district and landtax_api_lands.address_province=village.id_province
-              Where created_at between '".$_POST['datestart']." 00:00:00'  and '".$_POST['datestop']." 23:59:59' and address_province=".$_POST['nameprovince']." and address_district=".$_POST['namedistrict'].""; 
-              $result = pg_query($db,$query);
-              }
-              if(!empty($_POST['datestart'] and $_POST['datestop'] and $_POST['nameprovince'] and $_POST['namedistrict'] and $_POST['namevillage'])){                 
-                $chk_stt_search = 7;
-                // ຈະເຮັດວຽກຕອນທີ່ມີການ ຄົ້ນຫາຕາມວັນທີ ແລະ ເລືອກແຂວງ + ເມືອງ + ບ້ານ
-                $query = "SELECT province.name_province_la,district.name_district_la,village.name_village_la,landtax_api_lands.*
-                FROM landtax_api_lands
-                INNER JOIN province
-                ON landtax_api_lands.address_province=province.id_province
-                INNER JOIN district
-                ON landtax_api_lands.address_district=district.id_district and landtax_api_lands.address_province=district.id_province
-                INNER JOIN village
-                ON landtax_api_lands.address_village=village.id_village and landtax_api_lands.address_district=village.id_district and landtax_api_lands.address_province=village.id_province
-                Where created_at between '".$_POST['datestart']." 00:00:00'  and '".$_POST['datestop']." 23:59:59' and address_province=".$_POST['nameprovince']." and address_district=".$_POST['namedistrict']." and address_village=".$_POST['namevillage'].""; 
-                $result = pg_query($db,$query);
-                }
+
+      if(!empty($_POST['datestart'] and $_POST['datestop']) and empty($_POST['nameprovince'] and $_POST['namedistrict'] and $_POST['namevillage'])){    
+      // if(!empty($_POST['datestart'] and $_POST['datestop'])){    
+      $chk_stt_search = 4;
+      $stt_dstart = $_POST['datestart']; 
+      $stt_dstop = $_POST['datestop'];              
+      // ຈະເຮັດວຽກຕອນທີ່ມີການ ຄົ້ນຫາຕາມວັນທີ
+      $query = "SELECT (select sum (tax_paid) from landtax_api_lands) as total_paid,P.name_province_la,D.name_district_la,V.name_village_la,l.*
+      FROM landtax_api_lands AS L 
+      INNER JOIN province AS P
+      ON L.address_province = P.id_province
+      INNER JOIN district AS D
+      ON L.address_district=D.id_district and L.address_province = D.id_province
+      INNER JOIN village AS V
+      ON L.address_village=V.id_village and L.address_district=V.id_district and L.address_province = V.id_province
+      Where created_at between '".$_POST['datestart']." 00:00:00'  and '".$_POST['datestop']." 23:59:59' "; 
+      $result = pg_query($db,$query);
+      }
+
+    if(!empty($_POST['datestart'] and $_POST['datestop'] and $_POST['nameprovince']) and empty($_POST['namedistrict'] and $_POST['namevillage'])){ 
+    // if(!empty($_POST['datestart'] and $_POST['datestop'] and $_POST['nameprovince'])){ 
+      $chk_stt_search = 5;                
+      // ຈະເຮັດວຽກຕອນທີ່ມີການ ຄົ້ນຫາຕາມວັນທີ ແລະ ເລືອກແຂວງ
+      $query = "SELECT (select sum (tax_paid) from landtax_api_lands) as total_paid,P.name_province_la,D.name_district_la,V.name_village_la,l.*
+      FROM landtax_api_lands AS L 
+      INNER JOIN province AS P
+      ON L.address_province = P.id_province
+      INNER JOIN district AS D
+      ON L.address_district=D.id_district and L.address_province = D.id_province
+      INNER JOIN village AS V
+      ON L.address_village=V.id_village and L.address_district=V.id_district and L.address_province = V.id_province
+      Where created_at between '".$_POST['datestart']." 00:00:00'  and '".$_POST['datestop']." 23:59:59' and address_province=".$_POST['nameprovince'].""; 
+      $result = pg_query($db,$query);
+      }
+
+    if(!empty($_POST['datestart'] and $_POST['datestop'] and $_POST['nameprovince'] and $_POST['namedistrict']) and empty($_POST['namevillage'])){                 
+    // if(!empty($_POST['datestart'] and $_POST['datestop'] and $_POST['nameprovince'] and $_POST['namedistrict'])){                 
+      $chk_stt_search = 6;
+      // ຈະເຮັດວຽກຕອນທີ່ມີການ ຄົ້ນຫາຕາມວັນທີ ແລະ ເລືອກແຂວງ + ເມືອງ
+      $query = "SELECT (select sum (tax_paid) from landtax_api_lands) as total_paid,P.name_province_la,D.name_district_la,V.name_village_la,l.*
+      FROM landtax_api_lands AS L 
+      INNER JOIN province AS P
+      ON L.address_province = P.id_province
+      INNER JOIN district AS D
+      ON L.address_district=D.id_district and L.address_province = D.id_province
+      INNER JOIN village AS V
+      ON L.address_village=V.id_village and L.address_district=V.id_district and L.address_province = V.id_province
+      Where created_at between '".$_POST['datestart']." 00:00:00'  and '".$_POST['datestop']." 23:59:59' and address_province=".$_POST['nameprovince']." and address_district=".$_POST['namedistrict'].""; 
+      $result = pg_query($db,$query);
+      }
+
+    if(!empty($_POST['datestart'] and $_POST['datestop'] and $_POST['nameprovince'] and $_POST['namedistrict'] and $_POST['namevillage'])){                 
+      $chk_stt_search = 7;
+      $stt_dstart = $_POST['datestart']; 
+      $stt_dstop = $_POST['datestop'];  
+      // ຈະເຮັດວຽກຕອນທີ່ມີການ ຄົ້ນຫາຕາມວັນທີ ແລະ ເລືອກແຂວງ + ເມືອງ + ບ້ານ
+      $query = "SELECT (select sum (tax_paid) from landtax_api_lands) as total_paid,P.name_province_la,D.name_district_la,V.name_village_la,l.*
+      FROM landtax_api_lands AS L 
+      INNER JOIN province AS P
+      ON L.address_province = P.id_province
+      INNER JOIN district AS D
+      ON L.address_district=D.id_district and L.address_province = D.id_province
+      INNER JOIN village AS V
+      ON L.address_village=V.id_village and L.address_district=V.id_district and L.address_province = V.id_province
+      Where created_at between '".$_POST['datestart']." 00:00:00'  and '".$_POST['datestop']." 23:59:59' and address_province=".$_POST['nameprovince']." and address_district=".$_POST['namedistrict']." and address_village=".$_POST['namevillage'].""; 
+      $result = pg_query($db,$query);
+      }
    
 }else{
-  $chk_stt_search = 101;
+
+  $chk_stt_search = "";
     // ຈະເຮັດວຽກໃນຕອນ ໂຫຼດໜ້າຟອມ ເທື່ອທຳອິດ
-    $query = "SELECT province.name_province_la,district.name_district_la,village.name_village_la,landtax_api_lands.*
-    FROM landtax_api_lands
-    INNER JOIN province
-    ON landtax_api_lands.address_province=province.id_province
-    INNER JOIN district
-    ON landtax_api_lands.address_district=district.id_district and landtax_api_lands.address_province=district.id_province
-    INNER JOIN village
-    ON landtax_api_lands.address_village=village.id_village and landtax_api_lands.address_district=village.id_district and landtax_api_lands.address_province=village.id_province
+    $query = "SELECT (select sum (tax_paid) from landtax_api_lands) as total_paid,P.name_province_la,D.name_district_la,V.name_village_la,l.*
+    FROM landtax_api_lands AS L 
+    INNER JOIN province AS P
+    ON L.address_province = P.id_province
+    INNER JOIN district AS D
+    ON L.address_district=D.id_district and L.address_province = D.id_province
+    INNER JOIN village AS V
+    ON L.address_village=V.id_village and L.address_district=V.id_district and L.address_province = V.id_province
     "; 
     $result = pg_query($db,$query);
 }
@@ -315,9 +330,36 @@ if(isset($_POST['search'])){
                         
                         <h3><p>
                           <?php 
-                            if($chk_stt_search = ""){
-                              echo 'gkcgjkgjhkg';
-                            }elseif($chk_stt_search = 1){
+                            if($chk_stt_search == ""){
+                              $data = pg_query($db,$query);
+                              if(pg_num_rows($data)){
+                                $newrow55 = pg_fetch_assoc($data);
+                                echo 'gkcgjkgjhkg';
+                                $total_paid = $newrow55['total_paid'];
+                              }else{
+                                echo ' ຄົ້ນຫາ : ,';
+                              }
+                            }elseif($chk_stt_search == 1){
+                              $data = pg_query($db,$query);
+                              if(pg_num_rows($data)){
+                                $newrow55 = pg_fetch_assoc($data);
+                                echo ' ຄົ້ນຫາຕາມແຂວງ : '.$newrow55['name_province_la'].', ';
+                                $total_paid = $newrow55['total_paid'];
+                              }else{
+                                echo ' ຄົ້ນຫາຕາມແຂວງ : ,';
+                              }                             
+                            }elseif($chk_stt_search == 2){
+                              $data = pg_query($db,$query);
+                              if(pg_num_rows($data)){
+                                $newrow55 = pg_fetch_assoc($data);
+                                echo ' ຄົ້ນຫາຕາມແຂວງ : '.$newrow55['name_province_la'].', ';
+                                echo ' ເມືອງ : '.$newrow55['name_district_la'].', ';
+                                $total_paid = $newrow55['total_paid'];
+                              }else{
+                                echo ' ຄົ້ນຫາຕາມແຂວງ : ,';
+                                echo ' ເມືອງ : ,';
+                              }
+                            }elseif($chk_stt_search == 3){
                               $data = pg_query($db,$query);
                               if(pg_num_rows($data)){
                                 $newrow55 = pg_fetch_assoc($data);
@@ -328,19 +370,37 @@ if(isset($_POST['search'])){
                                 echo ' ຄົ້ນຫາຕາມແຂວງ : ,';
                                 echo ' ເມືອງ : ,';
                                 echo ' ບ້ານ : ';
-                              }                             
-                            }elseif($chk_stt_search = 2){
-                              
-                            }elseif($chk_stt_search = 3){
-                              
-                            }elseif($chk_stt_search = 4){
+                              }
+                            }elseif($chk_stt_search == 4){
+                              $data = pg_query($db,$query);
+                              if(pg_num_rows($data)){
+                                $newrow55 = pg_fetch_assoc($data);
+                                // echo ' ຄົ້ນຫາຕາມແຂວງ : '.$newrow55['name_province_la'].', ';
+                                // echo ' ເມືອງ : '.$newrow55['name_district_la'].', ';
+                                // echo ' ບ້ານ : '.$newrow55['name_village_la'].', ';
+                                echo ' ຄົ້ນຫາຕາມຊ້ວງວັນທີ : '.$stt_dstart.' ເຖິງ '.$stt_dstop;
+                                $total_paid = $newrow55['total_paid'];
+                              }else{
+                                echo ' ຄົ້ນຫາຕາມແຂວງ : ,';
+                                echo ' ເມືອງ : ,';
+                                echo ' ບ້ານ : ';
+                              }
+                            }elseif($chk_stt_search == 5){
 
-                            }elseif($chk_stt_search = 5){
+                            }elseif($chk_stt_search == 6){
 
-                            }elseif($chk_stt_search = 6){
-
-                            }elseif($chk_stt_search = 7){
-
+                            }elseif($chk_stt_search == 7){
+                              $data = pg_query($db,$query);
+                              if(pg_num_rows($data)){
+                                $newrow55 = pg_fetch_assoc($data);
+                                echo ' ຄົ້ນຫາຕາມແຂວງ : '.$newrow55['name_province_la'].', ';
+                                echo ' ເມືອງ : '.$newrow55['name_district_la'].', ';
+                                echo ' ບ້ານ : '.$newrow55['name_village_la'].', ';
+                                echo ' ຕາມຊ້ວງວັນທີ : '.$stt_dstart.' ເຖິງ '.$stt_dstop;
+                                $total_paid = $newrow55['total_paid'];
+                              }else{
+                                
+                              }
                             }
                             
                              
@@ -358,7 +418,7 @@ if(isset($_POST['search'])){
                         <div class="row align-items-center">
                           <div class="col">
                             <span class="h4 mb-0">ລວມເງິນຄ່າຊໍາລະ</span>
-                            <p class="text-muted mb-0">1,500,000</p>
+                            <p class="text-muted mb-0"><?php echo $total_paid ?></p>
                           </div>
                           <div class="col-auto">
                             <span class="fe fe-32 fe-clipboard text-muted mb-0"></span>
